@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mario/helper_classes/barrier.dart';
 import 'package:flutter_mario/helper_classes/bird.dart';
 
 class Home extends StatefulWidget {
@@ -18,6 +19,8 @@ class _HomeState extends State<Home> {
   double _ht = 0.0;
   var _timer;
   bool _gameHasStarted = false;
+  double _barrierOneX=0.0;
+  double _barrierTwoX=0.0;
 
   void _jump() {
     setState(() {
@@ -29,7 +32,7 @@ class _HomeState extends State<Home> {
   void _startGame() {
     _gameHasStarted = true;
 
-    Timer.periodic(Duration(milliseconds: 60), (Timer timer) {
+    Timer.periodic(const Duration(milliseconds: 60), (Timer timer) {
       // This function will be executed every 500ms.
       _time += 0.05;
       _ht = -4.9 * _time * _time + 2.8 * _time;
@@ -66,17 +69,68 @@ class _HomeState extends State<Home> {
                   _startGame();
                 }
               },
-              child: AnimatedContainer(
-                alignment: Alignment(0, _birdYAxis),
-                color: Colors.blue,
-                duration: Duration(milliseconds: 0),
-                child: const Bird(),
+              child: Stack(
+                children: [
+                  AnimatedContainer(
+                    alignment: Alignment(0, _birdYAxis),
+                    color: Colors.blue,
+                    duration: const Duration(milliseconds: 0),
+                    child: const Bird(),
+                  ),
+                  _gameHasStarted
+                      ? const Text("") : const Align(
+                          alignment: Alignment(0, -0.3),
+                          child: Text(
+                            "T A P  T O  P L A Y,",
+                            style: TextStyle(color: Colors.black, fontSize: 20),
+                          )),
+                 AnimatedContainer(alignment: Alignment(_barrierOneX,1.2),  duration: const Duration(milliseconds: 0),
+                 child: Barrier(size: 200)),
+                  Align(alignment: Alignment(_barrierTwoX,-1.2),  child: Barrier(size: 200)),
+                  Align(alignment: const Alignment(0.95,1.2),  child: Barrier(size: 100)),
+                  Align(alignment: const Alignment(0.95,-1.2),  child: Barrier(size: 100)),
+                ],
               ),
             )),
+        Container(
+          color: Colors.green,
+          height: 20,
+        ),
         Expanded(
             flex: 1,
             child: Container(
               color: Colors.brown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        "SCORE",
+                        style: TextStyle(color: Colors.white, fontSize: 35),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text("10")
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        "BEST",
+                        style: TextStyle(color: Colors.white, fontSize: 35),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text("10"),
+                    ],
+                  )
+                ],
+              ),
             ))
       ],
     ));
